@@ -4,7 +4,7 @@ import twitter4j.*;
 import twitter4j.conf.Configuration;
 
 public class TwtStream {
-    private int isTerminal = 0;
+    private boolean isTerminal = false;
     private String topic = "";
 
     public TwtStream(String topic) {
@@ -34,7 +34,7 @@ public class TwtStream {
             public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
                 System.out.println("---TWT: Got track limitation notice:" + numberOfLimitedStatuses);
                 //saver.close();
-                isTerminal = 1;
+                isTerminal = true;
             }
 
             @Override
@@ -55,7 +55,7 @@ public class TwtStream {
         });
     }
 
-    public int isTerminal() {
+    public boolean isTerminal() {
         return isTerminal;
     }
 }

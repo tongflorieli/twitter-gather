@@ -20,29 +20,33 @@ public class Twt {
      * main:
      */
     public static void main(String[] args) throws TwitterException {
-        System.out.print("Please enter topics:");
+        int lenTopic = 0;
+        System.out.print("Please Enter Topics (up to 5 topics):");
         Scanner sc = new Scanner(System.in);
-        String topics = sc.nextLine();
-        //System.out.println("java.class.path:\n" + System.getProperty("java.class.path"));
-
-        String[] trackTopic = topics.split(",");
-        System.out.println("track topic: " + Arrays.toString(trackTopic));
+        String[] topics = new String[5];
+        for (lenTopic = 0; lenTopic < 5; lenTopic++) {
+            String r = sc.nextLine();
+            if (r.length() == 0) {
+                break;
+            }
+            topics[lenTopic] = r;
+        }
 
         Configuration cb = genConfiguration();
-        TwtStream[] twtStream = new TwtStream[trackTopic.length];
+        TwtStream[] twtStream = new TwtStream[lenTopic];
         for (int i = 0; i < twtStream.length; i++) {
-            twtStream[i] = new TwtStream(trackTopic[i]);
-            twtStream[i].genTwitterStream(cb).filter(new FilterQuery(trackTopic[i]));
+            twtStream[i] = new TwtStream(topics[i]);
+            twtStream[i].genTwitterStream(cb).filter(new FilterQuery(topics[i]));
         }
 
-        int ret = 0;
-        while(ret == 0) {
-            ret = 1;
+        boolean ret = false;
+        while(!ret) {
+            ret = true;
             for (TwtStream a: twtStream) {
-                ret &= a.isTerminal();
+                ret = ret && a.isTerminal();
             }
         }
-        System.out.println("twitter over");
+        System.out.println("twt over");
     }
 
     public static Properties getProperties() {
@@ -53,7 +57,7 @@ public class Twt {
             InputStream inputStream = new FileInputStream(new File(path));
             prop.load(inputStream);
         } catch (FileNotFoundException ex) {
-            System.out.println("---cannot found file: twitter4j.properties");
+            System.out.println("---cannot found file: " + path);
             ex.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
