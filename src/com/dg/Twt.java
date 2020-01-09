@@ -7,6 +7,7 @@ import twitter4j.conf.ConfigurationBuilder;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.Scanner;
 
 
 /**
@@ -19,14 +20,12 @@ public class Twt {
      * main:
      */
     public static void main(String[] args) throws TwitterException {
-        System.out.println("twitter start...");
-        if(args.length < 1) {
-            System.out.println("Usage: ");
-            System.exit(-1);
-        }
+        System.out.print("Please enter topics:");
+        Scanner sc = new Scanner(System.in);
+        String topics = sc.nextLine();
         //System.out.println("java.class.path:\n" + System.getProperty("java.class.path"));
 
-        String[] trackTopic = args[0].split(",");
+        String[] trackTopic = topics.split(",");
         System.out.println("track topic: " + Arrays.toString(trackTopic));
 
         Configuration cb = genConfiguration();
