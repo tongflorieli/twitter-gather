@@ -2,16 +2,19 @@ package com.dg;
 
 import twitter4j.*;
 import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
+
+import java.util.Properties;
 
 public class TwtStream {
     private boolean isTerminal = false;
-    private String topic = "";
+    Configuration cfg;
 
-    public TwtStream(String topic) {
-        this.topic = topic;
+    public TwtStream(Properties prop) throws TwitterException {
+        this.cfg = TwtStream.genConfiguration(prop);
     }
 
-    public TwitterStream genTwitterStream(Configuration cfg) throws TwitterException {
+    public TwitterStream genTwitterStream(String topic) throws TwitterException {
         TwitterStream twitterStream = new TwitterStreamFactory(cfg).getInstance();
         return twitterStream.addListener(new StatusListener() {
             @Override
@@ -53,6 +56,17 @@ public class TwtStream {
                 ex.printStackTrace();
             }
         });
+    }
+
+    public static Configuration genConfiguration(Properties prop) throws TwitterException {
+        ConfigurationBuilder cb = new ConfigurationBuilder();
+        cb.setDebugEnabled(true)
+                .setOAuthConsumerKey(prop.getProperty("oauth.consumerKey"))
+                .setOAuthConsumerSecret(prop.getProperty("oauth.consumerSecret"))
+                .setOAuthAccessToken(prop.getProperty("oauth.accessToken"))
+                .setOAuthAccessTokenSecret(prop.getProperty("oauth.accessTokenSecret"));
+        cb.setJSONStoreEnabled(true);
+        return cb.build();
     }
 
     public boolean isTerminal() {

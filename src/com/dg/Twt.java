@@ -1,11 +1,8 @@
 package com.dg;
 
 import twitter4j.*;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -21,7 +18,7 @@ public class Twt {
      */
     public static void main(String[] args) throws TwitterException {
         int lenTopic = 0;
-        System.out.print("Please Enter Topics (up to 5 topics):");
+        System.out.println("Please Enter Topics (up to 5 topics):");
         Scanner sc = new Scanner(System.in);
         String[] topics = new String[5];
         for (lenTopic = 0; lenTopic < 5; lenTopic++) {
@@ -31,12 +28,13 @@ public class Twt {
             }
             topics[lenTopic] = r;
         }
+        //System.out.println("java.class.path:\n" + System.getProperty("java.class.path"));
 
-        Configuration cb = genConfiguration();
+        Properties prop = getProperties();
         TwtStream[] twtStream = new TwtStream[lenTopic];
         for (int i = 0; i < twtStream.length; i++) {
-            twtStream[i] = new TwtStream(topics[i]);
-            twtStream[i].genTwitterStream(cb).filter(new FilterQuery(topics[i]));
+            twtStream[i] = new TwtStream(prop);
+            twtStream[i].genTwitterStream(topics[i]).filter(new FilterQuery(topics[i]));
         }
 
         boolean ret = false;
@@ -65,18 +63,4 @@ public class Twt {
 
         return prop;
     }
-
-    //
-    public static Configuration genConfiguration() throws TwitterException {
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        Properties prop = getProperties();
-        cb.setDebugEnabled(true)
-                .setOAuthConsumerKey(prop.getProperty("oauth.consumerKey"))
-                .setOAuthConsumerSecret(prop.getProperty("oauth.consumerSecret"))
-                .setOAuthAccessToken(prop.getProperty("oauth.accessToken"))
-                .setOAuthAccessTokenSecret(prop.getProperty("oauth.accessTokenSecret"));
-        cb.setJSONStoreEnabled(true);
-        return cb.build();
-    }
-
 }
